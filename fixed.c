@@ -5,7 +5,7 @@ Last Modification Date: 10/1/2019
 */
 
 
-//Their code had a total of 65 faults that I found or corrected.
+//Their code had a total of 70 faults that I found or corrected.
 //Two of the functions used a tail pointer, but it was never really used. 
 //While the initial main function comment mentions tail, I never found a reason to use it in the functions provided with one exception
 //I did use the tail in one of the sections that I added, a check if the linked list was empty.
