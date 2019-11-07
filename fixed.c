@@ -5,15 +5,13 @@ Last Modification Date: 10/1/2019
 */
 
 
-//Their code had a total of 70 faults that I found or corrected.
-//Two of the functions used a tail pointer, but it was never really used. 
-//While the initial main function comment mentions tail, I never found a reason to use it in the functions provided with one exception
-//I did use the tail in one of the sections that I added, a check if the linked list was empty.
+//Their code had around 70 faults that I found or corrected (things I considered faults or problems), on 62 lines.
+//Two of the functions used a tail pointer, but it was only used for checking if the student list is empty. 
+//This functionality could have been added with just the head 
+//I added in the other two tail parameters to add in empty list checks to read and delete functions, because that is the way (I belive) they wanted to do it
 
 
-
-
-//#pragma warning(disable : 4996) ## suppressed warnings, fault
+//#pragma warning(disable : 4996)  ## suppressed warnings, doesnt do anything to the fixed code at least, fault ?
 #include <stdio.h> // ## did not include this header, fault
 #include <stdlib.h>
 #include <string.h>
@@ -31,13 +29,13 @@ typedef struct Student // ## did not include typedef here, fault
     struct Student *next; // ## did not include * on next, fault
 } student; // ## did not have student here, fault
 
-void writeStudent(student *head, student *tail); // ## did not include function headers,technically 4 faults
-void updateStudent(student *head);
+void writeStudent(student *head, student *tail); // ## did not include function headers, technically 4 faults
+void updateStudent(student *head, student *tail);
 void readStudent(student *head, student *tail);
-void deleteStudent(student *head);
+void deleteStudent(student *head, student *tail);
 
 // main function
-int main() // ## used argc and argv without needing or using them, fault
+int main()
 {
 
     // Create a head and tail student nodes, allocate memory for them, and link
@@ -63,13 +61,13 @@ int main() // ## used argc and argv without needing or using them, fault
             writeStudent(head, tail);
             break; // ## did not write break statement, fault
         case 2:
-            updateStudent(head);
+            updateStudent(head, tail); // ## did not include tail here, fault
             break; // ## did not write break statement, fault
         case 3:
             readStudent(head, tail);
             break; // ## did not write break statement, fault
         case 4:
-            deleteStudent(head);
+            deleteStudent(head, tail);
             break; // ## did not write break statement, fault
         }
     }
@@ -77,7 +75,7 @@ int main() // ## used argc and argv without needing or using them, fault
 }
 
 // Function to add/write student data
-void writeStudent(student *head, student *tail) // ## did not use * for head or tail,technically 2 faults
+void writeStudent(student *head, student *tail) // ## did not use * for head or tail, fault
 {
 
     //local variables
@@ -148,8 +146,14 @@ void writeStudent(student *head, student *tail) // ## did not use * for head or 
 }
 
 // Function to update student's information
-void updateStudent(student *head) // ## did not incude * for head, fault
+void updateStudent(student *head, student *tail) // ## did not incude * for head, did not include student *tail, 2 faults
 {
+
+    if (head->next == tail || head->next == NULL) // ## head->next == NULL instead of head->next == tail, fault
+    {
+        printf("List empty.\n");
+        return;
+    }
 
     //local variables
     char name[40];
@@ -166,12 +170,6 @@ void updateStudent(student *head) // ## did not incude * for head, fault
 
     student *curr;
     curr = head;
-
-    if (head->next == NULL) // ## head->next is never NULL, they could have meant to have tail here, but tail isnt passed, technical fault?
-    {
-        printf("List empty.");
-        return;
-    }
 
     //logic to get to the required student node
 
@@ -386,8 +384,14 @@ void readStudent(student *head, student *tail)
 }
 
 // Function delete a student's information
-void deleteStudent(student *head)
+void deleteStudent(student *head, student *tail)
 {
+
+    if (head->next == tail || head->next == NULL) // ## dont check for empty list. Doesnt crash but better usage
+    {
+        printf("List empty.\n");
+        return;
+    }
 
     //local variable
     char UID[10];
